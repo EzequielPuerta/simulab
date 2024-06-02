@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "simulab"
-version = "0.0.1"
+version = "0.0.2"
 description = "Simple simulation framework, created during a course of the Discrete Events Simulation Laboratory, from the University of Buenos Aires (https://modsimu.exp.dc.uba.ar/sed/)"
 authors = ["Armando Ezequiel Puerta <armando.ezequiel.puerta@gmail.com>"]
 license = "MIT License"
