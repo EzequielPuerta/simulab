@@ -1,0 +1,90 @@
+[tool.poetry]
+name = "simulab"
+version = "0.0.1"
+description = "Simple simulation framework, created during a course of the Discrete Events Simulation Laboratory, from the University of Buenos Aires (https://modsimu.exp.dc.uba.ar/sed/)"
+authors = ["Armando Ezequiel Puerta <armando.ezequiel.puerta@gmail.com>"]
+license = "MIT License"
+readme = "README.md"
+packages = [{include = "src"}]
+include = [{ path = "src" }]
+exclude = ["docs", "tests"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development"]
+homepage = "https://github.com/EzequielPuerta/simulab"
+repository = "https://github.com/EzequielPuerta/simulab"
+documentation = "https://github.com/EzequielPuerta/simulab"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "^1.26.4"
+networkx = "^3.3"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest-cov = "^5.0.0"
+pre-commit = "^3.7.1"
+flake8 = "^7.0.0"
+mypy = "^1.10.0"
+isort = "^5.13.2"
+black = {version = "^24.4.2", allow-prereleases = true}
+pytest = "^8.2.1"
+codecov = "^2.1.13"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/EzequielPuerta/simulab/issues"
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 100
+
+[tool.black]
+line-length = 100
+target-version = ['py38']
+include = '\.pyi?$'
+exclude = '''
+
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+  |
+)
+'''
+
+[tool.mypy]
+follow_imports = "silent"
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_any_generics = true
+check_untyped_defs = true
+no_implicit_reexport = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+exclude = [
+]
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+ignore_errors = true

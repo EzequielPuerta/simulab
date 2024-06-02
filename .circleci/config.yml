@@ -1,0 +1,107 @@
+version: 2.1
+orbs:
+  node: circleci/node@4.3
+  gh: circleci/github-cli@1.0
+jobs:
+  build_test:
+    docker:
+      - image: cimg/python:3.10.12
+    steps:
+      - checkout # checkout source code to working directory
+      - run:
+          name: Build package and prepare environment
+          command: |
+            mkdir test-results
+            sudo add-apt-repository universe -y
+            sudo apt-get update
+            sudo apt install -y python3-pip
+            python3 -m pip install virtualenv
+            curl -sSL https://install.python-poetry.org | python3 -
+      - run:
+          name: Run tests
+          command: |
+            poetry install --no-interaction --no-ansi -vvv
+            poetry run pytest --junitxml=test-results/junit.xml --cov=./ --cov-report=xml
+      - run:
+          name: Run code coverage
+          command: |
+            curl -Os https://uploader.codecov.io/latest/linux/codecov
+            chmod +x codecov
+            ./codecov
+      - store_test_results:
+          path: test-results
+  test_pypi_publish:
+    docker:
+      - image: cimg/python:3.10.12
+    steps:
+      - checkout # checkout source code to working directory
+      - run:
+          name: Build package and publish to TestPyPI
+          command: | # create whl, install twine and publish to Test PyPI
+            sudo add-apt-repository universe -y
+            sudo apt-get update
+            sudo apt install -y python3-pip
+            python3 -m pip install virtualenv
+            python3 -m pip install --upgrade build
+            python3 -m build
+            python3 -m pip install --upgrade twine
+            export TWINE_USERNAME=$TEST_TWINE_USERNAME
+            export TWINE_PASSWORD=$TEST_TWINE_PASSWORD
+            python3 -m twine upload --repository testpypi dist/*
+  pypi_publish:
+    docker:
+      - image: cimg/python:3.10.12
+    steps:
+      - checkout # checkout source code to working directory
+      - run:
+          name: Build package and publish to PyPI
+          command: | # create whl, install twine and publish to PyPI
+            sudo add-apt-repository universe -y
+            sudo apt-get update
+            sudo apt install -y python3-pip
+            python3 -m pip install virtualenv
+            python3 -m pip install --upgrade build
+            python3 -m build
+            python3 -m pip install --upgrade twine
+            python3 -m twine upload dist/*
+  gh_release:
+    docker:
+      - image: 'cimg/base:stable'
+    steps:
+      - checkout # checkout source code to working directory
+      - gh/setup
+      - run:
+          name: "Creating a GitHub Release"
+          command: |
+            export GITHUB_HOSTNAME="github.com"
+            set -- "$@" --notes-file "./CHANGELOG.md"
+            set -- "$@" --title "simulab v0.0.1"
+            set -- "$@" --repo "$(git config --get remote.origin.url)"
+            gh release create "0.0.1" "$@"
+workflows:
+  build_test_publish:
+    jobs:
+      - build_test
+      - test_pypi_publish:
+          requires:
+            - build_test
+          filters:
+            branches:
+              only:
+                - main
+      - pypi_publish:
+          requires:
+            - test_pypi_publish
+          filters:
+            branches:
+              only:
+                - main
+      - gh_release:
+          requires:
+            - pypi_publish
+          context:
+            - GITHUB_CREDENTIALS
+          filters:
+            branches:
+              only:
+                - main
