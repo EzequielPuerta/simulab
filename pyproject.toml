@@ -23,6 +23,7 @@ documentation = "https://github.com/EzequielPuerta/simulab"
 python = "^3.10"
 numpy = "^1.26.4"
 networkx = "^3.3"
+plotly = "^5.22.0"
 
 
 [tool.poetry.group.dev.dependencies]
