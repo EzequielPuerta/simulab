@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from functools import partialmethod
+from functools import partial, partialmethod
 from typing import List, Tuple
 
 
@@ -62,6 +62,10 @@ class Moore(Neighborhood):
         ]
 
 
+def _size(vision_range: int) -> int:
+    return sum([8 * i for i in range(1, vision_range + 1)])
+
+
 def _indexes_at_range(  # type: ignore[no-untyped-def]
     self,
     vision_range: int,
@@ -96,7 +100,7 @@ class ExpandedMoore:
             "WrappedExpandedMoore",
             (Neighborhood,),
             {
-                "size": lambda: sum([8 * i for i in range(1, vision_range + 1)]),
+                "size": partial(_size, vision_range),
                 "indexes_for": partialmethod(_indexes_at_range, vision_range),
             },
         )

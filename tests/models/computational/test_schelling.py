@@ -3,13 +3,13 @@ import pytest
 from simulab.models.computational.schelling.model import Schelling
 from simulab.simulation.core.equilibrium_criterion import WithoutCriterion
 from simulab.simulation.core.experiment import ExperimentParametersSet
-from simulab.simulation.core.neighborhood import Moore
+from simulab.simulation.core.neighborhood import ExpandedMoore
 from simulab.simulation.core.runner import Runner
 
 experiment_parameters_set = ExperimentParametersSet(
     length=[10],
     tolerance=[3, 4, 5],
-    neighborhood=[Moore],
+    neighborhood=[ExpandedMoore(vision_range=1)],
 )
 runner = Runner(
     Schelling,
