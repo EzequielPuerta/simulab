@@ -1,10 +1,10 @@
 import pytest
 
-from src.models.computational.schelling.model import Schelling
-from src.simulation.core.equilibrium_criterion import WithoutCriterion
-from src.simulation.core.experiment import ExperimentParametersSet
-from src.simulation.core.neighborhood import Moore
-from src.simulation.core.runner import Runner
+from simulab.models.computational.schelling.model import Schelling
+from simulab.simulation.core.equilibrium_criterion import WithoutCriterion
+from simulab.simulation.core.experiment import ExperimentParametersSet
+from simulab.simulation.core.neighborhood import Moore
+from simulab.simulation.core.runner import Runner
 
 experiment_parameters_set = ExperimentParametersSet(
     length=[10],

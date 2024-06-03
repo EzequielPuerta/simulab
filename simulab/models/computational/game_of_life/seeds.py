@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 import numpy as np
 
-from src.simulation.core.lattice import Lattice
+from simulab.simulation.core.lattice import Lattice
 
 
 class Seed(ABC):

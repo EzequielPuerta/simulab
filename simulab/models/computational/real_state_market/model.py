@@ -1,11 +1,11 @@
 from typing import List
 from typing import cast as typing_cast
 
-from src.models.abstract.agent import Agent
-from src.models.abstract.model import AbstractLatticeModel, as_series, as_series_with
-from src.models.computational.real_state_market.agent import RealStateAgent
-from src.models.computational.real_state_market.formulas import PriceFormula, UtilityFormula
-from src.simulation.core.lattice import Lattice
+from simulab.models.abstract.agent import Agent
+from simulab.models.abstract.model import AbstractLatticeModel, as_series, as_series_with
+from simulab.models.computational.real_state_market.agent import RealStateAgent
+from simulab.models.computational.real_state_market.formulas import PriceFormula, UtilityFormula
+from simulab.simulation.core.lattice import Lattice
 
 
 class RealStateMarket(AbstractLatticeModel):

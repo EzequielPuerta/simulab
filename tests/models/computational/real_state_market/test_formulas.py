@@ -1,4 +1,4 @@
-from src.models.computational.real_state_market.formulas import PriceFormula, UtilityFormula
+from simulab.models.computational.real_state_market.formulas import PriceFormula, UtilityFormula
 
 
 def test_utility_formula() -> None:

@@ -20,8 +20,8 @@ To achieve this, there is the `ExperimentParametersSet` class. This class allows
 For example, we know that the abstract model accepts the `length` and `neighborhood` parameters, and if we are specifically using the `GameOfLife` model, we can also pass it a list of *seeds* or *patterns*, so a possible set of parameters to simulate would be the following:
 
 ```python
-from src.simulation.core.experiment import ExperimentParametersSet
-from src.simulation.core.neighborhood import Moore
+from simulab.simulation.core.experiment import ExperimentParametersSet
+from simulab.simulation.core.neighborhood import Moore
 
 seeds = [Blinker(25,25), Blinker(28,28), Glider(10,10)]
 experiment_parameters_set = ExperimentParametersSet(
@@ -56,8 +56,8 @@ Internally, the Cartesian product will be applied to the different parameter lis
 Note that in the possible parameter values, in principle any quantity can be entered. That is, an analysis can be done on multiple parameters simultaneously. The complexity of the final analysis will depend on the selection of these values, but the system does not impose any limit in this regard. In the following example we have a cardinality of $3 \times 2 \times 3 = 18$:
 
 ```python
-from src.simulation.core.experiment import ExperimentParametersSet
-from src.simulation.core.neighborhood import Moore, VonNeumann
+from simulab.simulation.core.experiment import ExperimentParametersSet
+from simulab.simulation.core.neighborhood import Moore, VonNeumann
 
 seeds=[
     [Block(1,1), BeeHive(1,44), Loaf(23,23), Boat(44,1), Tub(44,44)],
@@ -79,9 +79,9 @@ experiment_parameters_set = ExperimentParametersSet(
 To execute the simulation there is the `Runner` object, which knows the protocol of the abstract model so that it can be executed without us worrying about its implementation. Therefore, with the `experiment_parameters_set` above, we could do something like the following:
 
 ```python
-from src.simulation.core.runner import Runner
-from src.simulation.core.equilibrium_criterion import WithoutCriterion
-from src.models.computational.game_of_life.model import GameOfLife
+from simulab.simulation.core.runner import Runner
+from simulab.simulation.core.equilibrium_criterion import WithoutCriterion
+from simulab.models.computational.game_of_life.model import GameOfLife
 
 runner = Runner(
     model=GameOfLife,
@@ -105,7 +105,7 @@ class AbstractCriterion(ABC):
 In particular, a more interesting criterion is already provided (in addition to the one seen above, the trivial and innocuous `WithoutCriterion`).
 
 ```python
-from src.simulation.core.equilibrium_criterion import EquilibriumCriterion
+from simulab.simulation.core.equilibrium_criterion import EquilibriumCriterion
 
 criterion = EquilibriumCriterion(
     series_name="total_average_satisfaction_level",
@@ -124,7 +124,7 @@ The `Runner` class has one last interesting attribute that allows us to repeat t
 For example, in the case of a Schelling model it could be interesting to carry out 10 simulations with the same parameters, obtain the 10 series that report the evolution of the average satisfaction in each experiment and calculate the average of them. To do this we could do something like:
 
 ```python
-from src.simulation.core.runner import Runner, Execute
+from simulab.simulation.core.runner import Runner, Execute
 
 runner = Runner(
     Schelling,
@@ -149,7 +149,7 @@ Finally, there are 3 objects that plot the results. They all understand the `sho
 To plot time series with numerical values ​​you can use the `NumericalSeries` class. The main parameters are the name of the series to be plotted, the *runner* instance that contains the data, the title of the graph, its size, the labels of the axes and whether they should be displayed logarithmically. For example, again with the Schelling case:
 
 ```python
-from src.simulation.plotters.numerical_series import NumericalSeries
+from simulab.simulation.plotters.numerical_series import NumericalSeries
 
 NumericalSeries.show_up(
     "total_average_satisfaction_level",
@@ -175,7 +175,7 @@ Something interesting to mention is that if the *runner* instance provided had a
 If you want to observe a two-dimensional series over a set of simulations with different combinations of parameters, the *plotter* to use is `FinalGridSeries`. Its parameters are the name of the series to be plotted, the *runner* instance with the simulated results, the graph title, the legend, the diagram size, etc.
 
 ```python
-from src.simulation.plotters.final_grid import FinalGridSeries
+from simulab.simulation.plotters.final_grid import FinalGridSeries
 
 FinalGridSeries.show_up(
     "agent_types_lattice",
@@ -193,7 +193,7 @@ This *plotter* has another attribute called `attributes_to_consider`. This is be
 If a parameter was the same for all experiments, it will not appear in the experiment identifier and therefore will not appear in the legends of the resulting plot. This attribute then allows us to add other parameters that we want to be shown in the legends, regardless of whether they have been part of the parameter analysis or not. If a parameter is indicated in this attribute that is already considered by the *plotter* by default, it is considered only once (for example the `tolerance` attribute in the *snippet* below, was already considered because the runner has experiments that vary this attribute):
 
 ```python
-from src.simulation.plotters.final_grid import FinalGridSeries
+from simulab.simulation.plotters.final_grid import FinalGridSeries
 
 FinalGridSeries.show_up(
     "dissatisfaction_threshold_lattice",
@@ -215,7 +215,7 @@ FinalGridSeries.show_up(
 If you want to observe the evolution step by step (and not just the initial and final configuration), you should use `AnimatedLatticeSeries`, whose attributes are the name of the series, the *runner* instance, the experiment number to plot ( in base 0), the title of the graph, the dimensions, the playback speed (value between 0 and 1) and again, the aforementioned `attributes_to_consider` with the same logic.
 
 ```python
-from src.simulation.plotters.animated_lattice import AnimatedLatticeSeries
+from simulab.simulation.plotters.animated_lattice import AnimatedLatticeSeries
 
 AnimatedLatticeSeries.show_up(
     "satisfaction_level_lattice",

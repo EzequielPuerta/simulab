@@ -6,10 +6,10 @@ from typing import Any, Callable, Dict, List, Tuple, Type, Union
 import networkx as nx
 import numpy as np
 
-from src.models.abstract.agent import Agent
-from src.simulation.core.equilibrium_criterion import AbstractCriterion
-from src.simulation.core.lattice import Lattice
-from src.simulation.core.neighborhood import Neighborhood, VonNeumann
+from simulab.models.abstract.agent import Agent
+from simulab.simulation.core.equilibrium_criterion import AbstractCriterion
+from simulab.simulation.core.lattice import Lattice
+from simulab.simulation.core.neighborhood import Neighborhood, VonNeumann
 
 
 class AbstractLatticeModel(ABC):

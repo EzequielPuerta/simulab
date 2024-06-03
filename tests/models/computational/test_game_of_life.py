@@ -1,11 +1,11 @@
 import pytest
 
-from src.models.computational.game_of_life.model import GameOfLife
-from src.models.computational.game_of_life.seeds import Blinker
-from src.simulation.core.equilibrium_criterion import WithoutCriterion
-from src.simulation.core.experiment import ExperimentParametersSet
-from src.simulation.core.neighborhood import Moore
-from src.simulation.core.runner import Runner
+from simulab.models.computational.game_of_life.model import GameOfLife
+from simulab.models.computational.game_of_life.seeds import Blinker
+from simulab.simulation.core.equilibrium_criterion import WithoutCriterion
+from simulab.simulation.core.experiment import ExperimentParametersSet
+from simulab.simulation.core.neighborhood import Moore
+from simulab.simulation.core.runner import Runner
 
 experiment_parameters_set = ExperimentParametersSet(
     length=[30, 40],

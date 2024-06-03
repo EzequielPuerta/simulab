@@ -1,6 +1,6 @@
 import pytest
 
-from src.simulation.core.experiment import ExperimentParameters, ExperimentParametersSet
+from simulab.simulation.core.experiment import ExperimentParameters, ExperimentParametersSet
 
 
 def test_experiment_parameters_creation() -> None:

@@ -10,7 +10,7 @@
 ## Schelling's Segregation
 
 ```python
-from src.models.computational.schelling.model import Schelling
+from simulab.models.computational.schelling.model import Schelling
 ```
 
 Parameters:
@@ -19,7 +19,7 @@ Parameters:
 ## Real State Market
 
 ```python
-from src.models.computational.real_state_market.model import RealStateMarket
+from simulab.models.computational.real_state_market.model import RealStateMarket
 ```
 
 Parameters:
@@ -31,7 +31,7 @@ Parameters:
 ## Condensation
 
 ```python
-from src.models.computational.condensation.model import Condensation
+from simulab.models.computational.condensation.model import Condensation
 ```
 
 Parameters:
@@ -40,8 +40,8 @@ Parameters:
 ## Conway's Game of Life
 
 ```python
-from src.models.computational.game_of_life.model import GameOfLife
-from src.models.computational.game_of_life.seeds import Seed
+from simulab.models.computational.game_of_life.model import GameOfLife
+from simulab.models.computational.game_of_life.seeds import Seed
 ```
 
 Parameters:
