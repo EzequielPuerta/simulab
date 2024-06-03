@@ -62,7 +62,9 @@ class AbstractLatticeModel(ABC):
         i: int,
         j: int,
     ) -> Agent:
-        return method(self.configuration.at(i, j), i, j)
+        agent = method(self.configuration.at(i, j), i, j)
+        self._by_type[agent.agent_type].append((i, j))
+        return agent
 
     def __basic_agent(self, agent_type: int, i: int, j: int) -> Agent:
         return Agent(agent_type=agent_type)

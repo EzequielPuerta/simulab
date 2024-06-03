@@ -1,4 +1,6 @@
-from simulab.simulation.core.neighborhood import Moore, VonNeumann
+import pytest
+
+from simulab.simulation.core.neighborhood import ExpandedMoore, Moore, VonNeumann
 
 
 def test_von_neumann_size() -> None:
@@ -87,3 +89,57 @@ def test_moore_border_indexes_for() -> None:
     neighbors = moore_neighborhood.indexes_for(*position)
     assert len(expected_neighbors) == len(neighbors)
     assert all((each in neighbors for each in expected_neighbors))
+
+
+def test_expanded_moore_with_negative_vision_raises_error() -> None:
+    with pytest.raises(AssertionError) as error:
+        ExpandedMoore(-1)
+    assert error.value.args[0] == "Vision range should be greater than 0"
+
+
+def test_expanded_moore_with_zero_vision_raises_error() -> None:
+    with pytest.raises(AssertionError) as error:
+        ExpandedMoore(0)
+    assert error.value.args[0] == "Vision range should be greater than 0"
+
+
+def test_expanded_moore_with_one_vision_range_is_equal_to_common_moore() -> None:
+    world = 5
+    expanded_moore_class = ExpandedMoore(1)
+    assert expanded_moore_class.size() == Moore.size()
+    expanded_moore = expanded_moore_class(world)
+    for i, j in Moore(world).indexes_for(2, 2):
+        assert (i, j) in expanded_moore.indexes_for(2, 2)
+
+
+def test_expanded_moore_with_normalization() -> None:
+    world = 5
+    expanded_moore_class = ExpandedMoore(1)
+    assert expanded_moore_class.size() == Moore.size()
+    expanded_moore = expanded_moore_class(world)
+    for i, j in Moore(world).indexes_for(0, 4):
+        assert (i, j) in expanded_moore.indexes_for(0, 4)
+
+
+def test_expanded_moore_with_vision_range_of_size_two() -> None:
+    world = 5
+    expanded_moore_class = ExpandedMoore(2)
+    assert expanded_moore_class.size() == pow(world, 2) - 1
+    expanded_moore = expanded_moore_class(world)
+
+    expected_indexes = [(i, j) for i in range(world) for j in range(world) if i != 2 or j != 2]
+    assert expanded_moore_class.size() == len(expected_indexes)
+    for i, j in expanded_moore.indexes_for(2, 2):
+        assert (i, j) in expected_indexes
+
+
+def test_expanded_moore_with_vision_range_of_size_three() -> None:
+    world = 7
+    expanded_moore_class = ExpandedMoore(3)
+    assert expanded_moore_class.size() == pow(world, 2) - 1
+    expanded_moore = expanded_moore_class(world)
+
+    expected_indexes = [(i, j) for i in range(world) for j in range(world) if i != 3 or j != 3]
+    assert expanded_moore_class.size() == len(expected_indexes)
+    for i, j in expanded_moore.indexes_for(3, 3):
+        assert (i, j) in expected_indexes
