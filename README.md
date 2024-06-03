@@ -15,7 +15,7 @@ Simple simulation framework, created during a course of the Discrete Events Simu
 
 ## Jupyter Notebooks
 
-On ***[this](https://github.com/EzequielPuerta-University/modelado_y_simulacion_de_sistemas_complejos)*** repository you can find some Jupyter Notebooks that use this framework. It's a set of models seen on some optional subject of my university career at the University of Buenos Aires.
+On ***[this](https://github.com/EzequielPuerta-University/modelado_y_simulacion_de_sistemas_complejos)*** repository you can find some Jupyter Notebooks (in Spanish) that use this framework. It's a set of models seen on some optional subject of my university career at the University of Buenos Aires.
 
 ## Framework explained
 
