@@ -3,7 +3,11 @@ from typing import Tuple
 import numpy as np
 import pytest
 
-from simulab.models.computational.real_state_market.agent import RealStateAgent, Transaction, Transfer
+from simulab.models.computational.real_state_market.agent import (
+    RealStateAgent,
+    Transaction,
+    Transfer,
+)
 from simulab.models.computational.real_state_market.formulas import PriceFormula, UtilityFormula
 from simulab.simulation.core.lattice import Lattice
 from simulab.simulation.core.neighborhood import Moore
