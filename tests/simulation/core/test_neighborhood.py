@@ -1,4 +1,4 @@
-from src.simulation.core.neighborhood import Moore, VonNeumann
+from simulab.simulation.core.neighborhood import Moore, VonNeumann
 
 
 def test_von_neumann_size() -> None:

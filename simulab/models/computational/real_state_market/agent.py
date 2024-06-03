@@ -1,8 +1,8 @@
 from typing import Tuple
 
-from src.models.abstract.agent import Agent
-from src.models.abstract.model import AbstractLatticeModel
-from src.simulation.core.lattice import Lattice
+from simulab.models.abstract.agent import Agent
+from simulab.models.abstract.model import AbstractLatticeModel
+from simulab.simulation.core.lattice import Lattice
 
 
 class Transfer:

@@ -1,4 +1,4 @@
-from src.simulation.core.lattice import Lattice
+from simulab.simulation.core.lattice import Lattice
 
 
 def test_lattice_shape() -> None:

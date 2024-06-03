@@ -1,7 +1,7 @@
 from typing import List
 
-from src.models.abstract.model import AbstractLatticeModel, as_series, as_series_with
-from src.simulation.core.lattice import Lattice
+from simulab.models.abstract.model import AbstractLatticeModel, as_series, as_series_with
+from simulab.simulation.core.lattice import Lattice
 
 
 class Schelling(AbstractLatticeModel):

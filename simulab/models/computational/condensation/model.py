@@ -2,8 +2,8 @@ from typing import List, cast
 
 import networkx as nx
 
-from src.models.abstract.model import AbstractLatticeModel, as_series
-from src.simulation.core.lattice import Lattice
+from simulab.models.abstract.model import AbstractLatticeModel, as_series
+from simulab.simulation.core.lattice import Lattice
 
 
 class Condensation(AbstractLatticeModel):

@@ -1,7 +1,7 @@
 import numpy as np
 import plotly.graph_objects as go
 
-from src.simulation.core.runner import Runner
+from simulab.simulation.core.runner import Runner
 
 
 class NumericalSeries:

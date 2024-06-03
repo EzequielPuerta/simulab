@@ -1,8 +1,8 @@
 from typing import List, Tuple, Type
 
-from src.models.abstract.model import AbstractLatticeModel
-from src.simulation.core.equilibrium_criterion import AbstractCriterion
-from src.simulation.core.experiment import ExperimentParametersSet
+from simulab.models.abstract.model import AbstractLatticeModel
+from simulab.simulation.core.equilibrium_criterion import AbstractCriterion
+from simulab.simulation.core.experiment import ExperimentParametersSet
 
 
 class Execute:

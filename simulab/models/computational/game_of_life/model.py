@@ -1,8 +1,8 @@
 from typing import List, cast
 
-from src.models.abstract.model import AbstractLatticeModel, as_series
-from src.models.computational.game_of_life.seeds import Seed
-from src.simulation.core.lattice import Lattice
+from simulab.models.abstract.model import AbstractLatticeModel, as_series
+from simulab.models.computational.game_of_life.seeds import Seed
+from simulab.simulation.core.lattice import Lattice
 
 
 class GameOfLife(AbstractLatticeModel):

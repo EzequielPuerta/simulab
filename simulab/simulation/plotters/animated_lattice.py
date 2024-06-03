@@ -2,7 +2,7 @@ from typing import Any, Dict, List
 
 import plotly.graph_objs as go
 
-from src.simulation.core.runner import Runner
+from simulab.simulation.core.runner import Runner
 
 
 class AnimatedLatticeSeries:
