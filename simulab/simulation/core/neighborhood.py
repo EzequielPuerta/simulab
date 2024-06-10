@@ -63,7 +63,8 @@ class Moore(Neighborhood):
 
 
 def _size(vision_range: int) -> int:
-    return sum([8 * i for i in range(1, vision_range + 1)])
+    side = 2*vision_range+1
+    return side*side - 1
 
 
 def _indexes_at_range(  # type: ignore[no-untyped-def]
@@ -72,25 +73,16 @@ def _indexes_at_range(  # type: ignore[no-untyped-def]
     i: int,
     j: int = 0,
 ) -> List[Tuple[int, int]]:
-    if vision_range == 0:
-        return []
-    else:
-        previous = _indexes_at_range(self, vision_range - 1, i, j)
-        side_size = (2 * vision_range) - 1
-        corners = [
-            (i - vision_range, j - vision_range),
-            (i - vision_range, j + vision_range),
-            (i + vision_range, j + vision_range),
-            (i + vision_range, j - vision_range),
-        ]
-        top = [(i - vision_range, j - vision_range + k) for k in range(1, side_size + 1)]
-        bottom = [(i + vision_range, j - vision_range + k) for k in range(1, side_size + 1)]
-        left = [(i - vision_range + k, j - vision_range) for k in range(1, side_size + 1)]
-        right = [(i - vision_range + k, j + vision_range) for k in range(1, side_size + 1)]
-        return [
-            (self._norm(x), self._norm(y))
-            for x, y in previous + corners + top + bottom + left + right
-        ]
+    start_i = i - vision_range
+    start_j = j - vision_range
+    end_i = i + vision_range
+    end_j = j + vision_range
+
+    return [
+        (self._norm(x), self._norm(y))
+        for x in range(start_i, end_i+1) for y in range(start_j, end_j+1)
+        if (x, y) != (i, j)
+    ]
 
 
 class ExpandedMoore:
