@@ -17,6 +17,8 @@ class AnimatedLatticeSeries:
         width: int | None = None,
         attributes_to_consider: List[str] | None = None,
         speed: float = 1 / 10,
+        zmax: Any | None = None,
+        zmin: Any | None = None,
     ) -> None:
         assert (
             0 <= experiment_id < len(runner.experiments)
@@ -38,7 +40,7 @@ class AnimatedLatticeSeries:
         figure = go.Figure(
             frames=[
                 go.Frame(
-                    data=[go.Heatmap(z=series[i])],
+                    data=[go.Heatmap(z=series[i], zmax=zmax, zmin=zmin)],
                     layout=go.Layout(title_text=_plot_title),
                     name=f"Step {i}",
                 )
@@ -46,7 +48,7 @@ class AnimatedLatticeSeries:
             ]
         )
 
-        figure.add_trace(go.Heatmap(z=series[0]))
+        figure.add_trace(go.Heatmap(z=series[0], zmax=zmax, zmin=zmin))
 
         sliders = [
             {

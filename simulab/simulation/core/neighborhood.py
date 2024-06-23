@@ -63,8 +63,8 @@ class Moore(Neighborhood):
 
 
 def _size(vision_range: int) -> int:
-    side = 2*vision_range+1
-    return side*side - 1
+    side = 2 * vision_range + 1
+    return side * side - 1
 
 
 def _indexes_at_range(  # type: ignore[no-untyped-def]
@@ -80,7 +80,8 @@ def _indexes_at_range(  # type: ignore[no-untyped-def]
 
     return [
         (self._norm(x), self._norm(y))
-        for x in range(start_i, end_i+1) for y in range(start_j, end_j+1)
+        for x in range(start_i, end_i + 1)
+        for y in range(start_j, end_j + 1)
         if (x, y) != (i, j)
     ]
 
