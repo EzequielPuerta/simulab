@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.8] - 2024-06-23
+
+### Added
+
+Heatmaps with static range values
+
 ## [0.0.7] - 2024-06-17
 
 ### Fixed
