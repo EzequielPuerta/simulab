@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from copy import deepcopy
 from functools import partial
-from typing import Any, Callable, Dict, List, Tuple, Type, Union
+from typing import Any, Callable, Dict, List, Set, Tuple, Type, Union
 
 import networkx as nx
 import numpy as np
@@ -31,8 +31,8 @@ class AbstractLatticeModel(ABC):
         self.__initial_configuration = configuration
 
     def __initialize(self) -> None:
-        self._by_type: Dict[int, List[Tuple[int, int]]] = {
-            _type: [] for _type in range(self.agent_types)
+        self._by_type: Dict[int, Set[Tuple[int, int]]] = {
+            _type: set() for _type in range(self.agent_types)
         }
         self.__configure_agents()
         self.__configure_series()
@@ -63,7 +63,7 @@ class AbstractLatticeModel(ABC):
         j: int,
     ) -> Agent:
         agent = method(self.configuration.at(i, j), i, j)
-        self._by_type[agent.agent_type].append((i, j))
+        self._by_type[agent.agent_type].add((i, j))
         return agent
 
     def __basic_agent(self, agent_type: int, i: int, j: int) -> Agent:
