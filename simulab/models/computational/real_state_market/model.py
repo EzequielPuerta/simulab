@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 from typing import cast as typing_cast
 
 from simulab.models.abstract.agent import Agent
@@ -83,6 +83,16 @@ class RealStateMarket(AbstractLatticeModel):
     @as_series
     def capital_level_lattice(self, flatten: bool = False) -> List[List[float]]:
         action = lambda i, j: self.get_real_state_agent(i, j).capital
+        return self._process_lattice_with(action, flatten=flatten)
+
+    @as_series
+    def capital_level_and_agent_type_lattice(
+        self, flatten: bool = False
+    ) -> List[List[Tuple[float, int]]]:
+        action = lambda i, j: (
+            self.get_real_state_agent(i, j).capital,
+            self.get_real_state_agent(i, j).agent_type,
+        )
         return self._process_lattice_with(action, flatten=flatten)
 
     @as_series_with(metadata={"states": ["satisfied", "dissatisfied"]})

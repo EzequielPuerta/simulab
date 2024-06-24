@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "simulab"
-version = "0.0.9"
+version = "0.0.10"
 description = "Simple simulation framework, created during a course of the Discrete Events Simulation Laboratory, from the University of Buenos Aires (https://modsimu.exp.dc.uba.ar/sed/)"
 authors = ["Armando Ezequiel Puerta <armando.ezequiel.puerta@gmail.com>"]
 license = "MIT License"
@@ -24,6 +24,7 @@ python = "^3.10"
 numpy = "^1.26.4"
 networkx = "^3.3"
 plotly = "^5.22.0"
+pandas = "^2.2.2"
 
 
 [tool.poetry.group.dev.dependencies]
