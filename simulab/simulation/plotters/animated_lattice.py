@@ -40,7 +40,7 @@ class AnimatedLatticeSeries:
         figure = go.Figure(
             frames=[
                 go.Frame(
-                    data=[go.Heatmap(z=series[i], zmax=zmax, zmin=zmin)],
+                    data=[cls.heatmap(data=series[i], zmax=zmax, zmin=zmin)],
                     layout=go.Layout(title_text=_plot_title),
                     name=f"Step {i}",
                 )
@@ -48,7 +48,7 @@ class AnimatedLatticeSeries:
             ]
         )
 
-        figure.add_trace(go.Heatmap(z=series[0], zmax=zmax, zmin=zmin))
+        figure.add_trace(cls.heatmap(data=series[0], zmax=zmax, zmin=zmin))
 
         sliders = [
             {
@@ -74,6 +74,19 @@ class AnimatedLatticeSeries:
             title_x=0.5,
             width=size if not width else width,
             height=size,
+            xaxis=dict(
+                title="X",
+                side="bottom",  # Move x-axis labels to the top
+                tickmode="linear",
+                tick0=0,
+                dtick=5,
+            ),
+            yaxis=dict(
+                title="Y",
+                tickmode="linear",
+                tick0=0,
+                dtick=5,
+            ),
             scene={
                 "zaxis": {"range": [-0.1, 6.8], "autorange": False},
                 "aspectratio": {"x": 1, "y": 1, "z": 1},
@@ -101,7 +114,6 @@ class AnimatedLatticeSeries:
             ],
             sliders=sliders,
         )
-
         figure.show()
 
     @classmethod
@@ -112,3 +124,17 @@ class AnimatedLatticeSeries:
             "fromcurrent": True,
             "transition": {"duration": duration, "easing": "linear"},
         }
+
+    @classmethod
+    def heatmap(
+        cls,
+        data: List[List[float]],
+        zmax: float | None,
+        zmin: float | None,
+    ) -> go.Heatmap:
+        return go.Heatmap(
+            z=data,
+            zmax=zmax,
+            zmin=zmin,
+            hovertemplate="<Category: %{text}> (%{y}, %{x}) = %{z}<extra></extra>",
+        )
