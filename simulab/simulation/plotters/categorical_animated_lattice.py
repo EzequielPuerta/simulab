@@ -110,13 +110,13 @@ class CategoricalAnimatedLatticeSeries:
                 side="bottom",
                 tickmode="linear",
                 tick0=0,
-                dtick=5,
+                dtick=1,
             ),
             yaxis=dict(
                 title="Y",
                 tickmode="linear",
                 tick0=0,
-                dtick=5,
+                dtick=1,
             ),
             scene={
                 "zaxis": {"range": [-0.1, 6.8], "autorange": False},
@@ -207,7 +207,7 @@ class CategoricalAnimatedLatticeSeries:
         if selected_category == all_categories_name:
             return z_matrix, text_matrix
         else:
-            mask = text_matrix == selected_category
+            mask = text_matrix == int(selected_category)
             z_masked = np.where(mask, z_matrix, np.nan)
             text_masked = np.where(mask, text_matrix, "")
             return z_masked, text_masked
