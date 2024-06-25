@@ -1,5 +1,6 @@
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, List, Set, Tuple
 
+import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
@@ -16,12 +17,17 @@ class FinalGridSeries:
         height: int | None = None,
         leyend: str = "",
         attributes_to_consider: List[str] | None = None,
+        colorscale: str = "Viridis",
     ) -> None:
         params = attributes_to_consider if attributes_to_consider else []
         params_set = set(params).union(runner.experiment_parameters_set.parameters_to_vary)
         rows = cls.process_series(runner, series_name, params_set)
+        zmin, zmax = cls.calculate_global_min_max(rows)
+
         figure = cls.make_figure(rows)
-        cls.configure_figure(figure, runner, plot_title, leyend, height, rows)
+        cls.configure_figure(
+            figure, runner, plot_title, leyend, height, rows, zmin, zmax, colorscale
+        )
         cls.configure_heatmaps(figure, rows)
         figure.show()
 
@@ -87,6 +93,14 @@ class FinalGridSeries:
         return rows
 
     @classmethod
+    def calculate_global_min_max(cls, rows: List[Dict[str, Any]]) -> Tuple[float, float]:
+        all_values: List[float] = []
+        for row in rows:
+            all_values.extend(sum(row["first_lattice"], []))
+            all_values.extend(sum(row["last_lattice"], []))
+        return min(all_values), max(all_values)
+
+    @classmethod
     def make_figure(cls, rows: List[Dict[str, Any]]) -> go.Figure:
         subplot_titles = [row["subplot_titles"][i] for row in rows for i in range(2)]
         row_titles = [row["title"] for row in rows]
@@ -108,6 +122,9 @@ class FinalGridSeries:
         leyend: str,
         height: int | None,
         rows: List[Dict[str, Any]],
+        zmin: float,
+        zmax: float,
+        colorscale: str,
     ) -> None:
         figure.update_xaxes(
             range=[0, runner.experiments[0].length - 1],
@@ -115,24 +132,32 @@ class FinalGridSeries:
             visible=False,
         )
         figure.update_yaxes(visible=False, autorange="reversed")
+        tick_count = len(rows[0]["tickvals"])
+        new_tickvals = list(np.linspace(zmin, zmax, tick_count))
+        calculated_height = height if height else max(600, 300 * len(rows))
+
         figure.update_layout(
-            height=height if height else (300 - (15 * len(rows))) * len(rows),
+            height=calculated_height,
             width=700,
             title_text=plot_title,
             yaxis_scaleanchor="x",
             **{f"yaxis{i}_scaleanchor": f"x{i}" for i in range(2, len(rows) * 2 + 1)},
             coloraxis_showscale=True,
             coloraxis={
+                "colorscale": colorscale,
                 "colorbar": {
                     "title": leyend,
                     "titleside": "top",
                     "tickmode": "array",
-                    "tickvals": rows[0]["tickvals"],
-                    "labelalias": rows[0]["labelalias"],
+                    "tickvals": new_tickvals,
+                    "ticktext": [f"{val:.1f}" for val in new_tickvals],
                     "ticks": "outside",
-                    "dtick": 1,
-                }
+                },
+                "cmin": zmin,
+                "cmax": zmax,
             },
+            margin=dict(l=50, r=50, t=100, b=100),
+            grid=dict(rows=len(rows), columns=2, pattern="independent"),
         )
 
     @classmethod
@@ -145,7 +170,11 @@ class FinalGridSeries:
             lattice_data = [(1, "first_lattice"), (2, "last_lattice")]
             for column, lattice in lattice_data:
                 figure.add_trace(
-                    go.Heatmap(z=row[lattice], coloraxis="coloraxis"),
+                    go.Heatmap(
+                        z=row[lattice],
+                        coloraxis="coloraxis",
+                        hovertemplate="x: %{y}<br>y: %{x}<br>z: %{z}<extra></extra>",
+                    ),
                     row=row["index"],
                     col=column,
                 )

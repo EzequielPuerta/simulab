@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 import plotly.graph_objs as go
 
@@ -13,12 +13,12 @@ class AnimatedLatticeSeries:
         runner: Runner,
         experiment_id: int,
         plot_title: str,
+        leyend: str = "",
         height: int | None = None,
         width: int | None = None,
         attributes_to_consider: List[str] | None = None,
         speed: float = 1 / 10,
-        zmax: Any | None = None,
-        zmin: Any | None = None,
+        colorscale: str = "Viridis",
     ) -> None:
         assert (
             0 <= experiment_id < len(runner.experiments)
@@ -36,11 +36,12 @@ class AnimatedLatticeSeries:
         )
         _plot_title = f"{plot_title}<br>{params_data[0]}"
         series = experiment.series[series_name]
+        zmin, zmax = cls.calculate_global_min_max(series)
 
         figure = go.Figure(
             frames=[
                 go.Frame(
-                    data=[cls.heatmap(data=series[i], zmax=zmax, zmin=zmin)],
+                    data=[cls.heatmap(data=series[i], zmax=zmax, zmin=zmin, colorscale=colorscale)],
                     layout=go.Layout(title_text=_plot_title),
                     name=f"Step {i}",
                 )
@@ -48,7 +49,7 @@ class AnimatedLatticeSeries:
             ]
         )
 
-        figure.add_trace(cls.heatmap(data=series[0], zmax=zmax, zmin=zmin))
+        figure.add_trace(cls.heatmap(data=series[0], zmax=zmax, zmin=zmin, colorscale=colorscale))
 
         sliders = [
             {
@@ -87,6 +88,14 @@ class AnimatedLatticeSeries:
                 tick0=0,
                 dtick=5,
             ),
+            coloraxis={
+                "colorbar": {
+                    "title": leyend,
+                    "titleside": "top",
+                    "tickmode": "array",
+                    "ticks": "outside",
+                },
+            },
             scene={
                 "zaxis": {"range": [-0.1, 6.8], "autorange": False},
                 "aspectratio": {"x": 1, "y": 1, "z": 1},
@@ -131,10 +140,24 @@ class AnimatedLatticeSeries:
         data: List[List[float]],
         zmax: float | None,
         zmin: float | None,
+        colorscale: str = "Viridis",
     ) -> go.Heatmap:
         return go.Heatmap(
             z=data,
+            colorscale=colorscale,
             zmax=zmax,
             zmin=zmin,
-            hovertemplate="<Category: %{text}> (%{y}, %{x}) = %{z}<extra></extra>",
+            hovertemplate="x: %{y}<br>y: %{x}<br>z: %{z}<extra></extra>",
         )
+
+    @classmethod
+    def calculate_global_min_max(cls, series: List[List[List[float]]]) -> Tuple[float, float]:
+        _min = _max = 0.0
+        for iteration in series:
+            for row in iteration:
+                for value in row:
+                    if value > _max:
+                        _max = value
+                    elif value < _min:
+                        _min = value
+        return _min, _max
