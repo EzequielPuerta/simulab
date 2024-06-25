@@ -23,7 +23,7 @@ class CategoricalAnimatedLatticeSeries:
         all_categories_name: str = "All",
         zmax: float | None = None,
         zmin: float | None = None,
-        colorscale: str = "Thermal",
+        colorscale: str = "Viridis",
         x_categories_position: float = 1.13,
     ) -> None:
         assert (
@@ -166,7 +166,7 @@ class CategoricalAnimatedLatticeSeries:
         zmax: float | None,
         selected_category: str,
         all_categories_name: str,
-        colorscale: str = "Thermal",
+        colorscale: str = "Viridis",
     ) -> go.Heatmap:
         df = pd.DataFrame(
             [
@@ -190,8 +190,6 @@ class CategoricalAnimatedLatticeSeries:
             colorscale=colorscale,
             showscale=True,
             hovertemplate="<Category: %{text}> (%{y}, %{x}) = %{z}<extra></extra>",
-            # xgap=1,
-            # ygap=1,
             zmin=zmin,
             zmax=zmax,
         )
