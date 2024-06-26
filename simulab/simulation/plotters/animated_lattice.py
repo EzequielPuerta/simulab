@@ -69,7 +69,8 @@ class AnimatedLatticeSeries:
         ]
 
         size = height if height else 600
-        figure.update_yaxes(autorange="reversed")
+        figure.update_xaxes(constrain="domain", autorange=True)
+        figure.update_yaxes(constrain="domain", autorange="reversed")
         figure.update_layout(
             title=_plot_title,
             title_x=0.5,
@@ -81,12 +82,18 @@ class AnimatedLatticeSeries:
                 tickmode="linear",
                 tick0=0,
                 dtick=5,
+                scaleanchor="y",
+                scaleratio=1,
+                constrain="domain",
             ),
             yaxis=dict(
                 title="Y",
                 tickmode="linear",
                 tick0=0,
                 dtick=5,
+                scaleanchor="x",
+                scaleratio=1,
+                constrain="domain",
             ),
             coloraxis={
                 "colorbar": {
@@ -153,11 +160,8 @@ class AnimatedLatticeSeries:
     @classmethod
     def calculate_global_min_max(cls, series: List[List[List[float]]]) -> Tuple[float, float]:
         _min = _max = 0.0
-        for iteration in series:
-            for row in iteration:
-                for value in row:
-                    if value > _max:
-                        _max = value
-                    elif value < _min:
-                        _min = value
+        iterations = [sum(lattice, []) for lattice in series]
+        maxs_mins = [(min(iteration), max(iteration)) for iteration in iterations]
+        _min = min(map(lambda each: each[0], maxs_mins))
+        _max = max(map(lambda each: each[1], maxs_mins))
         return _min, _max
