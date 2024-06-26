@@ -21,10 +21,9 @@ class CategoricalAnimatedLatticeSeries:
         speed: float = 1 / 10,
         zname: str = "z",
         all_categories_name: str = "All",
-        zmax: float | None = None,
-        zmin: float | None = None,
         colorscale: str = "Viridis",
         x_categories_position: float = 1.13,
+        show_labels: bool = False,
     ) -> None:
         assert (
             0 <= experiment_id < len(runner.experiments)
@@ -42,6 +41,7 @@ class CategoricalAnimatedLatticeSeries:
         )
         _plot_title = f"{plot_title}<br>{params_data[0]}"
         series = experiment.series[series_name]
+        zmin, zmax = cls.calculate_global_min_max(series)
         categories = [str(agent_type) for agent_type in range(experiment.agent_types)]
         categories = [all_categories_name] + categories
 
@@ -51,7 +51,14 @@ class CategoricalAnimatedLatticeSeries:
             for category in categories:
                 frame_data.append(
                     cls.heatmap(
-                        series[step], zname, zmin, zmax, category, all_categories_name, colorscale
+                        series[step],
+                        zname,
+                        zmin,
+                        zmax,
+                        category,
+                        all_categories_name,
+                        colorscale,
+                        show_labels,
                     )
                 )
                 frames.append(
@@ -65,27 +72,19 @@ class CategoricalAnimatedLatticeSeries:
 
         for category in categories:
             figure.add_trace(
-                cls.heatmap(series[0], zname, zmin, zmax, category, all_categories_name, colorscale)
+                cls.heatmap(
+                    series[0],
+                    zname,
+                    zmin,
+                    zmax,
+                    category,
+                    all_categories_name,
+                    colorscale,
+                    show_labels,
+                )
             )
 
-        sliders = [
-            {
-                "pad": {"b": 10, "t": 60},
-                "len": 0.9,
-                "x": 0.1,
-                "y": 0,
-                "steps": [
-                    {
-                        "args": [[f.name], cls.frame_args(0)],
-                        "label": str(k),
-                        "method": "animate",
-                    }
-                    for k, f in enumerate(figure.frames)
-                ],
-            }
-        ]
-
-        category_buttons = [
+        category_dropdown = [
             {
                 "label": category,
                 "method": "update",
@@ -98,7 +97,8 @@ class CategoricalAnimatedLatticeSeries:
         ]
 
         size = height if height else 600
-        figure.update_yaxes(autorange="reversed")
+        figure.update_xaxes(constrain="domain", autorange=True)
+        figure.update_yaxes(constrain="domain", autorange="reversed")
         figure.update_layout(
             title=_plot_title,
             title_x=0.5,
@@ -110,19 +110,36 @@ class CategoricalAnimatedLatticeSeries:
                 side="bottom",
                 tickmode="linear",
                 tick0=0,
-                dtick=1,
+                dtick=5,
+                tickangle=0,
+                scaleanchor="y",
+                scaleratio=1,
+                constrain="domain",
             ),
             yaxis=dict(
                 title="Y",
                 tickmode="linear",
                 tick0=0,
-                dtick=1,
+                dtick=5,
+                scaleanchor="x",
+                scaleratio=1,
+                constrain="domain",
             ),
             scene={
                 "zaxis": {"range": [-0.1, 6.8], "autorange": False},
                 "aspectratio": {"x": 1, "y": 1, "z": 1},
             },
             updatemenus=[
+                {
+                    "type": "dropdown",
+                    "buttons": category_dropdown,
+                    "direction": "down",
+                    # "pad": {"b": 0, "r": 10, "t": 70},
+                    "showactive": True,
+                    # "x": 0.05,
+                    # "y": -0.475,
+                    "yanchor": "bottom",
+                },
                 {
                     "type": "buttons",
                     "buttons": [
@@ -142,17 +159,23 @@ class CategoricalAnimatedLatticeSeries:
                     "x": 0.1,
                     "y": 0,
                 },
-                {
-                    "type": "buttons",
-                    "buttons": category_buttons,
-                    "direction": "down",
-                    "pad": {"r": 10, "t": 10},
-                    "x": x_categories_position,
-                    "y": 0,
-                    "yanchor": "top",
-                },
             ],
-            sliders=sliders,
+            sliders=[
+                {
+                    "pad": {"b": 10, "t": 60},
+                    "len": 1,
+                    "x": 0.1,
+                    "y": 0,
+                    "steps": [
+                        {
+                            "args": [[f.name], cls.frame_args(0)],
+                            "label": str(k // len(categories)),
+                            "method": "animate",
+                        }
+                        for k, f in enumerate(figure.frames)
+                    ],
+                }
+            ],
         )
 
         figure.show()
@@ -167,6 +190,7 @@ class CategoricalAnimatedLatticeSeries:
         selected_category: str,
         all_categories_name: str,
         colorscale: str = "Viridis",
+        show_labels: bool = False,
     ) -> go.Heatmap:
         df = pd.DataFrame(
             [
@@ -177,19 +201,20 @@ class CategoricalAnimatedLatticeSeries:
         )
         df.columns = ["y", "x", zname, "category"]
         z_matrix = df.pivot(index="y", columns="x", values=zname).values
-        text_matrix = df.pivot(index="y", columns="x", values="category").values
+        category_matrix = df.pivot(index="y", columns="x", values="category").values
 
-        z_matrix, text_matrix = cls.update_z(
-            selected_category, all_categories_name, z_matrix, text_matrix
+        z_matrix, category_matrix = cls.update_z(
+            selected_category, all_categories_name, z_matrix, category_matrix
         )
 
         return go.Heatmap(
             z=z_matrix,
-            text=text_matrix,
-            texttemplate="%{text}",
+            text=category_matrix if show_labels else None,
+            texttemplate="%{text}" if show_labels else None,
+            customdata=category_matrix,
             colorscale=colorscale,
             showscale=True,
-            hovertemplate="<Category: %{text}> (%{y}, %{x}) = %{z}<extra></extra>",
+            hovertemplate="<Category: %{customdata}> (%{y}, %{x}) = %{z}<extra></extra>",
             zmin=zmin,
             zmax=zmax,
         )
@@ -200,14 +225,14 @@ class CategoricalAnimatedLatticeSeries:
         selected_category: str,
         all_categories_name: str,
         z_matrix: List[List[Any]],
-        text_matrix: List[List[str]],
+        category_matrix: List[List[str]],
     ) -> Tuple[List[List[Any]], List[List[str]]]:
         if selected_category == all_categories_name:
-            return z_matrix, text_matrix
+            return z_matrix, category_matrix
         else:
-            mask = text_matrix == int(selected_category)
+            mask = category_matrix == int(selected_category)
             z_masked = np.where(mask, z_matrix, np.nan)
-            text_masked = np.where(mask, text_matrix, "")
+            text_masked = np.where(mask, category_matrix, "")
             return z_masked, text_masked
 
     @classmethod
@@ -218,3 +243,17 @@ class CategoricalAnimatedLatticeSeries:
             "fromcurrent": True,
             "transition": {"duration": duration, "easing": "linear"},
         }
+
+    @classmethod
+    def calculate_global_min_max(
+        cls, series: List[List[List[Tuple[float, int]]]]
+    ) -> Tuple[float, float]:
+        _min = _max = 0.0
+        iterations = [sum(lattice, []) for lattice in series]
+        maxs_mins = [
+            (min(map(lambda x: x[0], iteration)), max(map(lambda x: x[0], iteration)))
+            for iteration in iterations
+        ]
+        _min = min(map(lambda each: each[0], maxs_mins))
+        _max = max(map(lambda each: each[1], maxs_mins))
+        return _min, _max

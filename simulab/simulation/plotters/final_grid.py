@@ -57,7 +57,7 @@ class FinalGridSeries:
             _min, _max = min(lattice), max(lattice)
             if _max - _min > max_agent_types:
                 # ...and with intensity levels
-                tickvals = list(range(_min, _max + 1))
+                tickvals = np.linspace(_min, _max + 1, num=(8 * len(runner.experiments)))
                 labelalias = {i: str(i) for i in tickvals}
             else:
                 # ...so we should plot just the different agent types
@@ -130,8 +130,13 @@ class FinalGridSeries:
             range=[0, runner.experiments[0].length - 1],
             constrain="domain",
             visible=False,
+            autorange=True,
         )
-        figure.update_yaxes(visible=False, autorange="reversed")
+        figure.update_yaxes(
+            constrain="domain",
+            visible=False,
+            autorange="reversed",
+        )
         tick_count = len(rows[0]["tickvals"])
         new_tickvals = list(np.linspace(zmin, zmax, tick_count))
         calculated_height = height if height else max(600, 300 * len(rows))
