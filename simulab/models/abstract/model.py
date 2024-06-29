@@ -62,7 +62,8 @@ class AbstractLatticeModel(ABC):
         i: int,
         j: int,
     ) -> Agent:
-        agent = method(self.configuration.at(i, j), i, j)
+        target = self.configuration.at(i, j)
+        agent = target if isinstance(target, Agent) else method(target, i, j)
         self._by_type[agent.agent_type].add((i, j))
         return agent
 
