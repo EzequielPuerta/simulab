@@ -16,6 +16,12 @@ class Lattice:
             configuration.tolist() if isinstance(configuration, np.ndarray) else configuration
         )
 
+    def __repr__(self) -> str:
+        representation = str(self.configuration[0])
+        for row in self.configuration[1:]:
+            representation = representation + "\n" + str(row)
+        return representation
+
     @classmethod
     def full(cls, fill_value: int, length: int) -> "Lattice":
         return cls(np.full((length, length), fill_value))

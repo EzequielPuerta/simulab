@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.14] - 2024-06-29
+
+### Added
+
+Better representation for Lattice instances
+
 ## [0.0.13] - 2024-06-26
 
 ### Fixed
