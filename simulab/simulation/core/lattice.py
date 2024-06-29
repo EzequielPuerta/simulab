@@ -40,8 +40,11 @@ class Lattice:
 
     @classmethod
     def with_probability(cls, probability: float, length: int) -> "Lattice":
-        result = np.random.rand(length, length) < probability
-        return cls((result).astype(int))
+        ones = int(length * length * probability)
+        zeros = length * length - ones
+        result = np.array([0] * zeros + [1] * ones)
+        np.random.shuffle(result)
+        return cls(result.reshape((length, length)))
 
     def at(self, i: int, j: int) -> Any:
         return self.configuration[i][j]
