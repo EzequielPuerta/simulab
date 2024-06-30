@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.17] - 2024-06-30
+
+### Added
+
+Zmin and Zmax allowed again for animated plotters.
+
 ## [0.0.16] - 2024-06-30
 
 ### Fixed
