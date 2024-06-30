@@ -1,5 +1,6 @@
 from typing import Any, Dict, List, Tuple
 
+import numpy as np
 import plotly.graph_objs as go
 
 from simulab.simulation.core.runner import Runner
@@ -159,9 +160,14 @@ class AnimatedLatticeSeries:
 
     @classmethod
     def calculate_global_min_max(cls, series: List[List[List[float]]]) -> Tuple[float, float]:
-        _min = _max = 0.0
-        iterations = [sum(lattice, []) for lattice in series]
-        maxs_mins = [(min(iteration), max(iteration)) for iteration in iterations]
-        _min = min(map(lambda each: each[0], maxs_mins))
-        _max = max(map(lambda each: each[1], maxs_mins))
+        current_min = current_max = 0.0
+        for iteration in series:
+            lattice = sum(iteration, [])
+            try:
+                _min = np.nanmin(lattice)
+                _max = np.nanmax(lattice)
+                current_min = min(current_min, _min)
+                current_max = max(current_max, _max)
+            except RuntimeWarning:
+                pass
         return _min, _max

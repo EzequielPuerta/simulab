@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.16] - 2024-06-30
+
+### Fixed
+
+Filter Nan values from global min and max
+
 ## [0.0.15] - 2024-06-29
 
 ### Fixed
