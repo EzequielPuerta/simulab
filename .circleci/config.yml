@@ -75,9 +75,9 @@ jobs:
           command: |
             export GITHUB_HOSTNAME="github.com"
             set -- "$@" --notes-file "./CHANGELOG.md"
-            set -- "$@" --title "simulab v0.0.14"
+            set -- "$@" --title "simulab v0.0.15"
             set -- "$@" --repo "$(git config --get remote.origin.url)"
-            gh release create "0.0.14" "$@"
+            gh release create "0.0.15" "$@"
 workflows:
   build_test_publish:
     jobs:
