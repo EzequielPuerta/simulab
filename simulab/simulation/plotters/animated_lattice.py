@@ -20,6 +20,8 @@ class AnimatedLatticeSeries:
         attributes_to_consider: List[str] | None = None,
         speed: float = 1 / 10,
         colorscale: str = "Viridis",
+        zmin: float | None = None,
+        zmax: float | None = None,
     ) -> None:
         assert (
             0 <= experiment_id < len(runner.experiments)
@@ -37,7 +39,9 @@ class AnimatedLatticeSeries:
         )
         _plot_title = f"{plot_title}<br>{params_data[0]}"
         series = experiment.series[series_name]
-        zmin, zmax = cls.calculate_global_min_max(series)
+        _zmin, _zmax = cls.calculate_global_min_max(series)
+        zmin = _zmin if zmin is None else zmin
+        zmax = _zmax if zmax is None else zmax
 
         figure = go.Figure(
             frames=[
