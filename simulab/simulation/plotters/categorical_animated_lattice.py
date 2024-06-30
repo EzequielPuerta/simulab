@@ -24,6 +24,8 @@ class CategoricalAnimatedLatticeSeries:
         colorscale: str = "Viridis",
         x_categories_position: float = 1.13,
         show_labels: bool = False,
+        zmin: float | None = None,
+        zmax: float | None = None,
     ) -> None:
         assert (
             0 <= experiment_id < len(runner.experiments)
@@ -41,7 +43,9 @@ class CategoricalAnimatedLatticeSeries:
         )
         _plot_title = f"{plot_title}<br>{params_data[0]}"
         series = experiment.series[series_name]
-        zmin, zmax = cls.calculate_global_min_max(series)
+        _zmin, _zmax = cls.calculate_global_min_max(series)
+        if zmin is None: zmin = _zmin
+        if zmax is None: zmax = _zmax
         categories = [str(agent_type) for agent_type in range(experiment.agent_types)]
         categories = [all_categories_name] + categories
 
