@@ -18,11 +18,15 @@ class FinalGridSeries:
         leyend: str = "",
         attributes_to_consider: List[str] | None = None,
         colorscale: str = "Viridis",
+        zmin: float | None = None,
+        zmax: float | None = None,
     ) -> None:
         params = attributes_to_consider if attributes_to_consider else []
         params_set = set(params).union(runner.experiment_parameters_set.parameters_to_vary)
         rows = cls.process_series(runner, series_name, params_set)
-        zmin, zmax = cls.calculate_global_min_max(rows)
+        _zmin, _zmax = cls.calculate_global_min_max(rows)
+        zmin = _zmin if zmin is None else zmin
+        zmax = _zmax if zmax is None else zmax
 
         figure = cls.make_figure(rows)
         cls.configure_figure(
@@ -98,7 +102,10 @@ class FinalGridSeries:
         for row in rows:
             all_values.extend(sum(row["first_lattice"], []))
             all_values.extend(sum(row["last_lattice"], []))
-        return min(all_values), max(all_values)
+        try:
+            return np.nanmin(all_values), np.nanmax(all_values)
+        except RuntimeWarning:
+            return 0, 0
 
     @classmethod
     def make_figure(cls, rows: List[Dict[str, Any]]) -> go.Figure:
